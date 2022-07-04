@@ -17,6 +17,7 @@
 package com.google.samples.apps.sunflower
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil.setContentView
@@ -33,5 +34,8 @@ class GardenActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContentView<ActivityGardenBinding>(this, R.layout.activity_garden)
+        val myToast = Toast.makeText(applicationContext,"Welcome to see you!",Toast.LENGTH_LONG)
+        myToast.show()
+
     }
 }

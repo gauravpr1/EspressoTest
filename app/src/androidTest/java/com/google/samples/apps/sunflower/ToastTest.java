@@ -16,8 +16,6 @@
 
 package com.google.samples.apps.sunflower;
 
-
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -26,6 +24,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNot.not;
+
+import android.view.View;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.assertion.ViewAssertions;
@@ -33,42 +36,49 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
-import android.app.Fragment;
-import android.view.View;
-
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class GardenActivityJava {
-
+public class ToastTest {
     @Rule
     public ActivityScenarioRule<GardenActivity> activityRule =
             new ActivityScenarioRule<>(GardenActivity.class);
-
-
-
-
-
+    private View decorView;
+    @Before
+    public void setUp() {
+        activityRule.getScenario().onActivity(new ActivityScenario.ActivityAction<GardenActivity>() {
+            @Override
+            public void perform(GardenActivity activity) {
+                decorView = activity.getWindow().getDecorView();
+            }
+        });
+    }
+    //Test if the Toast Message is Displayed
     @Test
-    public void clickAddPlant_OpensPlantList() {
+    public void testValidToast() {
         // Given that no Plants are added to the user's garden
 
         // When the "Add Plant" button is clicked(Yellow Button)
         onView(withId(R.id.add_plant)).perform(click());
-
-        // Then the ViewPager should change to the Plant List page (Plant Page)
-        onView(withId(R.id.plant_list)).check(matches(isDisplayed()));
-        Espresso.pressBackUnconditionally();
-
-        //onView(withText("R.string.toast_text")).inRoot(withDecorView(not(getApplicationContext().getgetDecorView()))).check(matches(isDisplayed()));
+        //Verify Toast is Displayed After clicking the Plant List Fragment
+        onView(withText("Welcome For The Visit"))
+                .inRoot(withDecorView(Matchers.not(decorView)))// Here we use decorView
+                .check(matches(isDisplayed()));
     }
+    //Test if the Toast Message is not Displayed
+    @Test
+    public void testToastNotDisplayed() {
+        // Given that no Plants are added to the user's garden
 
+        // When the "Add Plant" button is clicked(Yellow Button)
+        onView(withId(R.id.add_plant)).perform(click());
+        //Verify Toast is Displayed After clicking the Plant List Fragment
+        onView(withText("Your Toast"))
+                .inRoot(withDecorView(Matchers.not(decorView)))// Here we use decorView
+                .check(matches(not(isDisplayed())));
+    }
 }
-

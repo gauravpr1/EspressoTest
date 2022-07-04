@@ -49,6 +49,7 @@ class GardenFragment : Fragment() {
             navigateToPlantListPage()
         }
 
+
         subscribeUi(adapter, binding)
         return binding.root
     }
